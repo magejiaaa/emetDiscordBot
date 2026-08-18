@@ -1,0 +1,9 @@
+function handleReady(client) {
+  console.log(`Logged in as ${client.user.tag}`);
+}
+
+module.exports = {
+  name: 'clientReady',
+  once: true,
+  execute: handleReady,
+};
