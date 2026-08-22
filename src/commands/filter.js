@@ -61,30 +61,30 @@ module.exports = {
 
     if (subcommand === '頻道新增') {
       const channel = interaction.options.getChannel('頻道', true);
-      const added = filterService.addChannel(guildId, channel.id);
+      const added = await filterService.addChannel(guildId, channel.id);
       return safeReply(interaction, ephemeral(`${added ? '已新增' : '已存在'}過濾頻道：${channel}`));
     }
 
     if (subcommand === '頻道移除') {
       const channel = interaction.options.getChannel('頻道', true);
-      const removed = filterService.removeChannel(guildId, channel.id);
+      const removed = await filterService.removeChannel(guildId, channel.id);
       return safeReply(interaction, ephemeral(`${removed ? '已移除' : '原本未設定'}過濾頻道：${channel}`));
     }
 
     if (subcommand === '詞新增') {
       const word = interaction.options.getString('詞', true);
-      const added = filterService.addWord(guildId, word);
+      const added = await filterService.addWord(guildId, word);
       return safeReply(interaction, ephemeral(`${added ? '已新增' : '已存在'}過濾詞：\`${word.trim()}\``));
     }
 
     if (subcommand === '詞移除') {
       const word = interaction.options.getString('詞', true);
-      const removed = filterService.removeWord(guildId, word);
+      const removed = await filterService.removeWord(guildId, word);
       return safeReply(interaction, ephemeral(`${removed ? '已移除' : '找不到'}過濾詞：\`${word.trim()}\``));
     }
 
-    const channels = filterService.listChannels(guildId);
-    const words = filterService.listWords(guildId).map((row) => row.word);
+    const channels = await filterService.listChannels(guildId);
+    const words = (await filterService.listWords(guildId)).map((row) => row.word);
     const content = [
       `過濾頻道：${channels.length ? channels.map((id) => `<#${id}>`).join('、') : '尚未設定'}`,
       `過濾詞：${words.length ? words.map((word) => `\`${word}\``).join('、') : '尚未設定'}`,

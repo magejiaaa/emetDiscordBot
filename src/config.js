@@ -10,8 +10,10 @@ function requireEnv(name) {
       'DISCORD_TOKEN=your_bot_token_here',
       'CLIENT_ID=your_application_client_id_here',
       'SUBMISSION_GUILD_ID=your_target_server_id_here',
+      'DATABASE_URL=postgresql://user:password@host:port/database',
       '',
       'You can find DISCORD_TOKEN and CLIENT_ID in the Discord Developer Portal.',
+      'DATABASE_URL is provided by your PostgreSQL host, such as Railway.',
     ].join('\n');
     throw new Error(help);
   }
@@ -23,5 +25,5 @@ module.exports = {
   clientId: requireEnv('CLIENT_ID'),
   devGuildId: process.env.DEV_GUILD_ID || null,
   submissionGuildId: process.env.SUBMISSION_GUILD_ID || null,
-  databasePath: process.env.DATABASE_PATH || './data/bot.sqlite',
+  databaseUrl: process.env.DATABASE_URL || null,
 };

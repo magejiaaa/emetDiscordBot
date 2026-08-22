@@ -1,40 +1,43 @@
-const { db } = require('../db/database');
+const { query } = require('../db/database');
 
-const getSettingsStmt = db.prepare('SELECT * FROM guild_settings WHERE guild_id = ?');
-const upsertSubmissionChannelStmt = db.prepare(`
-  INSERT INTO guild_settings (guild_id, submission_channel_id, updated_at)
-  VALUES (?, ?, CURRENT_TIMESTAMP)
-  ON CONFLICT(guild_id) DO UPDATE SET
-    submission_channel_id = excluded.submission_channel_id,
-    updated_at = CURRENT_TIMESTAMP
-`);
-const upsertLogChannelStmt = db.prepare(`
-  INSERT INTO guild_settings (guild_id, log_channel_id, updated_at)
-  VALUES (?, ?, CURRENT_TIMESTAMP)
-  ON CONFLICT(guild_id) DO UPDATE SET
-    log_channel_id = excluded.log_channel_id,
-    updated_at = CURRENT_TIMESTAMP
-`);
-const configuredGuildsStmt = db.prepare(`
-  SELECT guild_id, submission_channel_id
-  FROM guild_settings
-  WHERE submission_channel_id IS NOT NULL
-`);
-
-function getSettings(guildId) {
-  return getSettingsStmt.get(guildId) || null;
+async function getSettings(guildId) {
+  const result = await query('SELECT * FROM guild_settings WHERE guild_id = $1', [guildId]);
+  return result.rows[0] || null;
 }
 
-function setSubmissionChannel(guildId, channelId) {
-  upsertSubmissionChannelStmt.run(guildId, channelId);
+async function setSubmissionChannel(guildId, channelId) {
+  await query(
+    `
+      INSERT INTO guild_settings (guild_id, submission_channel_id, updated_at)
+      VALUES ($1, $2, NOW())
+      ON CONFLICT(guild_id) DO UPDATE SET
+        submission_channel_id = EXCLUDED.submission_channel_id,
+        updated_at = NOW()
+    `,
+    [guildId, channelId],
+  );
 }
 
-function setLogChannel(guildId, channelId) {
-  upsertLogChannelStmt.run(guildId, channelId);
+async function setLogChannel(guildId, channelId) {
+  await query(
+    `
+      INSERT INTO guild_settings (guild_id, log_channel_id, updated_at)
+      VALUES ($1, $2, NOW())
+      ON CONFLICT(guild_id) DO UPDATE SET
+        log_channel_id = EXCLUDED.log_channel_id,
+        updated_at = NOW()
+    `,
+    [guildId, channelId],
+  );
 }
 
-function listGuildsWithSubmissionChannels() {
-  return configuredGuildsStmt.all();
+async function listGuildsWithSubmissionChannels() {
+  const result = await query(`
+    SELECT guild_id, submission_channel_id
+    FROM guild_settings
+    WHERE submission_channel_id IS NOT NULL
+  `);
+  return result.rows;
 }
 
 module.exports = {

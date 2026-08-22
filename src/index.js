@@ -1,7 +1,7 @@
 const { Client, Collection, GatewayIntentBits, Partials } = require('discord.js');
 const { token } = require('./config');
 const { buildCommandMap } = require('./commands');
-const { initializeDatabase } = require('./db/database');
+const { closeDatabase, initializeDatabase } = require('./db/database');
 const interactionCreate = require('./events/interactionCreate');
 const messageCreate = require('./events/messageCreate');
 const ready = require('./events/ready');
@@ -13,8 +13,6 @@ process.on('unhandledRejection', (error) => {
 process.on('uncaughtException', (error) => {
   console.error('Uncaught exception:', error);
 });
-
-initializeDatabase();
 
 const client = new Client({
   intents: [
@@ -42,4 +40,22 @@ setInterval(() => {
   }
 }, 5 * 60 * 1000).unref();
 
-client.login(token);
+async function start() {
+  await initializeDatabase();
+  await client.login(token);
+}
+
+async function shutdown(signal) {
+  console.log(`Received ${signal}, shutting down...`);
+  client.destroy();
+  await closeDatabase();
+  process.exit(0);
+}
+
+process.once('SIGINT', () => shutdown('SIGINT'));
+process.once('SIGTERM', () => shutdown('SIGTERM'));
+
+start().catch((error) => {
+  console.error('Failed to start bot:', error);
+  process.exitCode = 1;
+});

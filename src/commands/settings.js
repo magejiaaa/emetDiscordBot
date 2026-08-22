@@ -43,12 +43,12 @@ module.exports = {
     const channel = interaction.options.getChannel('頻道', true);
 
     if (subcommand === '投稿頻道') {
-      setSubmissionChannel(interaction.guildId, channel.id);
+      await setSubmissionChannel(interaction.guildId, channel.id);
       return safeReply(interaction, ephemeral(`已設定匿名投稿頻道為 ${channel}。`));
     }
 
     if (subcommand === '日誌頻道') {
-      setLogChannel(interaction.guildId, channel.id);
+      await setLogChannel(interaction.guildId, channel.id);
       return safeReply(interaction, ephemeral(`已設定日誌頻道為 ${channel}。`));
     }
 

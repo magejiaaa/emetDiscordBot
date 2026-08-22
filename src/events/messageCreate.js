@@ -33,11 +33,11 @@ async function handleMessageCreate(message) {
     return;
   }
 
-  if (!filterService.isFilteredChannel(message.guildId, message.channelId)) {
+  if (!(await filterService.isFilteredChannel(message.guildId, message.channelId))) {
     return;
   }
 
-  const matchedWord = filterService.findMatchedWord(message.guildId, message.content || '');
+  const matchedWord = await filterService.findMatchedWord(message.guildId, message.content || '');
   if (!matchedWord) {
     return;
   }

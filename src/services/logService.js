@@ -1,7 +1,7 @@
 const { getSettings } = require('./settingsService');
 
 async function sendGuildLog(client, guildId, content) {
-  const settings = getSettings(guildId);
+  const settings = await getSettings(guildId);
   if (!settings?.log_channel_id) {
     return false;
   }
