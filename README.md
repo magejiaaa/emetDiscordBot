@@ -87,8 +87,10 @@ DEV_GUILD_ID=optional_test_guild_id
 
 - `/設定 投稿頻道` sets the anonymous submission output channel.
 - `/設定 日誌頻道` sets moderation/error log channel.
+- `/設定 查看` shows the current submission channel, log channel, filter channels, and filter words.
 - `/過濾 頻道新增|頻道移除|詞新增|詞移除|列表` manages filtered channels and words.
 - `/公告 頻道` opens a modal and posts Markdown as the bot.
+- `/轉發 訊息連結 目標頻道` uses Discord's official message forwarding to forward a message from the current server. Administrator only.
 - `/投稿` works in bot DM and in servers. It opens a modal for required report fields and accepts up to 3 optional images.
 - `/投稿刪除 投稿ID` works in bot DM and in servers, and deletes only the caller's own submission.
 
