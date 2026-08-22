@@ -132,7 +132,11 @@ async function deleteSubmission(client, submissionId, requesterId) {
 
   const message = await channel.messages.fetch(submission.message_id).catch(() => null);
   if (message) {
-    await message.delete();
+    await message.edit({
+      content: '投稿者已刪除',
+      embeds: [],
+      components: [],
+    });
   }
 
   await query(

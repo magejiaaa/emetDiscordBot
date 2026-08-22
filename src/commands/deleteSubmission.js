@@ -26,7 +26,7 @@ module.exports = {
         return safeReply(interaction, ephemeral(result.reason));
       }
 
-      return safeReply(interaction, `已刪除投稿 \`${result.id}\`。`);
+      return safeReply(interaction, `已將投稿 \`${result.id}\` 的內容改為「投稿者已刪除」。`);
     } catch (error) {
       console.error('Failed to delete submission:', error);
       return safeReply(interaction, ephemeral('刪除投稿失敗，請稍後再試或聯絡管理員。'));
