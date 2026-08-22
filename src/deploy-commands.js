@@ -9,8 +9,12 @@ async function deployCommands() {
   const payload = commands.map((command) => command.data.toJSON());
 
   if (devGuildId) {
-    await rest.put(Routes.applicationGuildCommands(clientId, devGuildId), { body: payload });
-    console.log(`Deployed ${payload.length} guild commands to ${devGuildId}.`);
+    const guildPayload = commands
+      .filter((command) => !dmCommandNames.has(command.data.name))
+      .map((command) => command.data.toJSON());
+
+    await rest.put(Routes.applicationGuildCommands(clientId, devGuildId), { body: guildPayload });
+    console.log(`Deployed ${guildPayload.length} guild commands to ${devGuildId}.`);
 
     const dmPayload = commands
       .filter((command) => dmCommandNames.has(command.data.name))
